@@ -8,6 +8,7 @@ import com.algolia.instantsearch.core.connection.ConnectionHandler
 import com.algolia.instantsearch.helper.android.list.SearcherSingleIndexDataSource
 import com.algolia.instantsearch.helper.android.searchbox.SearchBoxConnectorPagedList
 import com.algolia.instantsearch.helper.searcher.SearcherSingleIndex
+import com.algolia.instantsearch.helper.stats.StatsConnector
 import com.algolia.search.client.ClientSearch
 import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
@@ -41,10 +42,12 @@ class MyViewModel : ViewModel() {
         ).build()
 
     val searchBox = SearchBoxConnectorPagedList(searcher, listOf(products))
+    val stats = StatsConnector(searcher)
     val connection = ConnectionHandler()
 
     init {
         connection += searchBox
+        connection += stats
     }
 
     override fun onCleared() {
