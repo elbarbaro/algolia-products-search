@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -37,6 +38,7 @@ class ProductFragment : Fragment() {
         val productListView = view.findViewById<RecyclerView>(R.id.productList)
         val searchView = view.findViewById<SearchView>(R.id.searchView)
         val txtStats = view.findViewById<TextView>(R.id.stats)
+        val btnFilters = view.findViewById<Button>(R.id.filters)
 
 
         val viewModel = ViewModelProvider(requireActivity())[MyViewModel::class.java]
@@ -55,6 +57,10 @@ class ProductFragment : Fragment() {
 
         val statsView = StatsTextView(txtStats)
         connection += viewModel.stats.connectView(statsView, StatsPresenterImpl())
+
+        btnFilters.setOnClickListener {
+            (requireActivity() as MainActivity).showFacetFragment()
+        }
     }
 
     override fun onDestroyView() {

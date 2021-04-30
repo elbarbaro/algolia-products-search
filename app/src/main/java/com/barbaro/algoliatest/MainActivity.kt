@@ -16,4 +16,17 @@ class MainActivity : AppCompatActivity() {
             .add(R.id.container, ProductFragment())
             .commit()
     }
+
+    fun showFacetFragment() {
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.container, FacetFragment())
+            .addToBackStack("facet")
+            .commit()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        supportFragmentManager.popBackStack()
+        return super.onSupportNavigateUp()
+    }
 }
