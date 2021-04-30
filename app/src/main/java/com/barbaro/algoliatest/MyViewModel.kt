@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.algolia.instantsearch.core.connection.ConnectionHandler
 import com.algolia.instantsearch.helper.android.list.SearcherSingleIndexDataSource
+import com.algolia.instantsearch.helper.android.searchbox.SearchBoxConnectorPagedList
 import com.algolia.instantsearch.helper.searcher.SearcherSingleIndex
 import com.algolia.search.client.ClientSearch
 import com.algolia.search.model.APIKey
@@ -19,10 +21,14 @@ class MyViewModel : ViewModel() {
     private val apiKey = "3d9875e51fbd20c7754e65422f7ce5e1"
     private val indexName = "bestbuy"
 
+    // Search initialization
+
     val client = ClientSearch(ApplicationID(applicationId), APIKey(apiKey), LogLevel.ALL)
     val index = client.initIndex(IndexName(indexName))
     val searcher = SearcherSingleIndex(index)
 
+
+    // Hits initialization
     val dataSourceFactory = SearcherSingleIndexDataSource.Factory(searcher) { hit ->
         Product(
             hit.json.getValue("name").jsonPrimitive.content
@@ -34,8 +40,16 @@ class MyViewModel : ViewModel() {
             dataSourceFactory, pagedListConfig
         ).build()
 
+    val searchBox = SearchBoxConnectorPagedList(searcher, listOf(products))
+    val connection = ConnectionHandler()
+
+    init {
+        connection += searchBox
+    }
+
     override fun onCleared() {
         super.onCleared()
         searcher.cancel()
+        connection.clear()
     }
 }

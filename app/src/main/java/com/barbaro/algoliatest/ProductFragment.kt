@@ -4,14 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.algolia.instantsearch.core.connection.ConnectionHandler
 import com.algolia.instantsearch.helper.android.list.autoScrollToStart
+import com.algolia.instantsearch.helper.android.searchbox.SearchBoxViewAppCompat
+import com.algolia.instantsearch.helper.android.searchbox.connectView
 
 class ProductFragment : Fragment() {
+
+    private val connection =  ConnectionHandler()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,6 +31,7 @@ class ProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val productListView = view.findViewById<RecyclerView>(R.id.productList)
+        val searchView = view.findViewById<SearchView>(R.id.searchView)
 
         val viewModel = ViewModelProvider(requireActivity())[MyViewModel::class.java]
 
@@ -36,5 +43,14 @@ class ProductFragment : Fragment() {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.autoScrollToStart(adapterProduct)
         }
+
+        val searchBoxView = SearchBoxViewAppCompat(searchView)
+
+        connection += viewModel.searchBox.connectView(searchBoxView)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        connection.clear()
     }
 }
