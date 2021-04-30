@@ -22,6 +22,7 @@ import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.Attribute
 import com.algolia.search.model.IndexName
 import io.ktor.client.features.logging.LogLevel
+import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
 class MyViewModel : ViewModel() {
@@ -40,7 +41,8 @@ class MyViewModel : ViewModel() {
     // Hits initialization
     val dataSourceFactory = SearcherSingleIndexDataSource.Factory(searcher) { hit ->
         Product(
-            hit.json.getValue("name").jsonPrimitive.content
+            hit.json.getValue("name").jsonPrimitive.content,
+            hit.json["_highlightResult"]?.jsonObject
         )
     }
 
